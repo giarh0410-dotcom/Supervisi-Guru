@@ -843,3 +843,47 @@ export async function exportSingleEvaluationToWord(item: RPPEvaluation) {
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
+
+export function downloadTeacherTemplate() {
+  const sampleData = [
+    {
+      'Nama Guru': 'Dra. Hj. Siti Aminah, M.Pd.',
+      'NIP / NUPTK': '198203152008012010',
+      'Mata Pelajaran': 'IPA (Ilmu Pengetahuan Alam)',
+      'Kelas / Fase': 'Kelas VII / Fase D',
+      'Satuan Pendidikan': 'SMP Negeri 1 Depok',
+      'Unit Kerja': 'SMP Negeri 1 Depok - Dinas Pendidikan Kota Depok',
+      'Email': 'siti.aminah@smpn1depok.sch.id',
+      'No HP / WA': '081234567890',
+      'Catatan': 'Guru Penggerak Angkatan 5',
+    },
+    {
+      'Nama Guru': 'Budi Santoso, S.Pd., M.Si.',
+      'NIP / NUPTK': '198506142010011015',
+      'Mata Pelajaran': 'Matematika',
+      'Kelas / Fase': 'Kelas VIII / Fase D',
+      'Satuan Pendidikan': 'SMP Negeri 2 Depok',
+      'Unit Kerja': 'SMP Negeri 2 Depok - Dinas Pendidikan Kota Depok',
+      'Email': 'budi.santoso@smpn2depok.sch.id',
+      'No HP / WA': '081987654321',
+      'Catatan': 'Wakil Kurikulum',
+    },
+  ];
+
+  const worksheet = XLSX.utils.json_to_sheet(sampleData);
+  worksheet['!cols'] = [
+    { wch: 28 },
+    { wch: 22 },
+    { wch: 25 },
+    { wch: 18 },
+    { wch: 25 },
+    { wch: 40 },
+    { wch: 30 },
+    { wch: 18 },
+    { wch: 30 },
+  ];
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, 'Template Data Guru');
+  XLSX.writeFile(workbook, 'Template_Input_Data_Guru_Supervisi.xlsx');
+}
+
