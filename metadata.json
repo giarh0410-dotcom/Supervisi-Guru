@@ -1,0 +1,8 @@
+{
+  "name": "Remix Aplikasi Telaah RPP, Pra Observasi, Observasi Kelas dan Pasca Observasi_1",
+  "description": "Instrumen Terpadu Telaah Perencanaan Pembelajaran Mendalam Terintegrasi Literasi dan Numerasi Kota Depok oleh Tati Maryati, S.Pd., M.Pd.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
