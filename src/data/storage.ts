@@ -9,11 +9,54 @@ import {
   calculateObservasiScores,
   calculateCombinedSupervisionScore,
 } from './instrumentData';
+import { db } from '../firebase';
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 
 const STORAGE_KEY = 'supervisi_terpadu_pembelajaran_mendalam_v2';
 const LEGACY_STORAGE_KEY = 'telaah_rpp_evaluations_v1';
 const TEACHERS_STORAGE_KEY = 'supervisi_teachers_directory_v1';
 const SETTINGS_STORAGE_KEY = 'supervisi_app_settings_v1';
+
+// Firestore Realtime / Background Sync Helpers
+export async function syncEvaluationToFirestore(evalItem: RPPEvaluation) {
+  try {
+    await setDoc(doc(db, 'evaluations', evalItem.id), evalItem);
+  } catch (err) {
+    console.error('Firestore eval sync error:', err);
+  }
+}
+
+export async function deleteEvaluationFromFirestore(id: string) {
+  try {
+    await deleteDoc(doc(db, 'evaluations', id));
+  } catch (err) {
+    console.error('Firestore eval delete error:', err);
+  }
+}
+
+export async function syncTeacherToFirestore(teacher: TeacherProfile) {
+  try {
+    await setDoc(doc(db, 'teachers', teacher.id), teacher);
+  } catch (err) {
+    console.error('Firestore teacher sync error:', err);
+  }
+}
+
+export async function deleteTeacherFromFirestore(id: string) {
+  try {
+    await deleteDoc(doc(db, 'teachers', id));
+  } catch (err) {
+    console.error('Firestore teacher delete error:', err);
+  }
+}
+
+export async function syncSettingsToFirestore(settings: AppSettings) {
+  try {
+    await setDoc(doc(db, 'settings', 'config'), settings);
+  } catch (err) {
+    console.error('Firestore settings sync error:', err);
+  }
+}
 
 export function getAppSettings(): AppSettings {
   try {
@@ -67,6 +110,7 @@ export function getAppSettings(): AppSettings {
 
 export function saveAppSettings(settings: AppSettings): void {
   localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(settings));
+  syncSettingsToFirestore(settings);
 }
 
 export const SAMPLE_TEACHERS: TeacherProfile[] = [
@@ -174,6 +218,8 @@ export function saveTeacher(teacher: TeacherProfile): TeacherProfile[] {
     ];
   }
   localStorage.setItem(TEACHERS_STORAGE_KEY, JSON.stringify(updated));
+  const savedItem = updated.find(t => t.id === teacher.id) || updated[0];
+  syncTeacherToFirestore(savedItem);
   return updated;
 }
 
@@ -181,6 +227,7 @@ export function deleteTeacher(id: string): TeacherProfile[] {
   const current = getAllTeachers();
   const filtered = current.filter(t => t.id !== id);
   localStorage.setItem(TEACHERS_STORAGE_KEY, JSON.stringify(filtered));
+  deleteTeacherFromFirestore(id);
   return filtered;
 }
 
@@ -188,7 +235,6 @@ export function getTeacherById(id: string): TeacherProfile | undefined {
   const all = getAllTeachers();
   return all.find(t => t.id === id);
 }
-
 
 // Normalize any item to ensure all 4-phase properties exist
 export function normalizeEvaluation(item: any): RPPEvaluation {
@@ -223,7 +269,6 @@ export function normalizeEvaluation(item: any): RPPEvaluation {
       observationClassTime: item.identity?.observationClassTime || '',
     },
 
-    // Tahap 1: Telaah RPP
     scores,
     sectionComments: item.sectionComments || {},
     feedback: item.feedback || {
@@ -242,10 +287,8 @@ export function normalizeEvaluation(item: any): RPPEvaluation {
     predicate: item.predicate || rppCalc.predicate,
     predicateLabel: item.predicateLabel || rppCalc.predicateLabel,
 
-    // Tahap 2: Pra Observasi
     praObservasi: item.praObservasi || createDefaultPraObservasi(),
 
-    // Tahap 3: Observasi Kelas
     observasiScores,
     observasiComments: item.observasiComments || {},
     observasiScoreA: item.observasiScoreA !== undefined ? item.observasiScoreA : obsCalc.observasiScoreA,
@@ -256,10 +299,8 @@ export function normalizeEvaluation(item: any): RPPEvaluation {
     observasiPredicate: item.observasiPredicate || obsCalc.observasiPredicate,
     observasiPredicateLabel: item.observasiPredicateLabel || obsCalc.observasiPredicateLabel,
 
-    // Tahap 4: Pasca Observasi & Tindak Lanjut
     pascaObservasi: item.pascaObservasi || createDefaultPascaObservasi(),
 
-    // Hasil Akhir Gabungan
     combinedFinalScore: item.combinedFinalScore !== undefined ? item.combinedFinalScore : combined.combinedFinalScore,
     combinedPredicate: item.combinedPredicate || combined.combinedPredicate,
     combinedPredicateLabel: item.combinedPredicateLabel || combined.combinedPredicateLabel,
@@ -270,7 +311,6 @@ export function getAllEvaluations(): RPPEvaluation[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      // Check legacy storage first
       const legacyRaw = localStorage.getItem(LEGACY_STORAGE_KEY);
       if (legacyRaw) {
         try {
@@ -284,7 +324,6 @@ export function getAllEvaluations(): RPPEvaluation[] {
           // ignore
         }
       }
-      // Initialize with sample evaluation
       localStorage.setItem(STORAGE_KEY, JSON.stringify(SAMPLE_EVALUATIONS));
       return SAMPLE_EVALUATIONS;
     }
@@ -317,6 +356,8 @@ export function saveEvaluation(evaluation: RPPEvaluation): RPPEvaluation[] {
   }
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedList));
+  const savedItem = updatedList.find(item => item.id === normalized.id) || updatedList[0];
+  syncEvaluationToFirestore(savedItem);
   return updatedList;
 }
 
@@ -324,6 +365,7 @@ export function deleteEvaluation(id: string): RPPEvaluation[] {
   const current = getAllEvaluations();
   const filtered = current.filter((item) => item.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+  deleteEvaluationFromFirestore(id);
   return filtered;
 }
 

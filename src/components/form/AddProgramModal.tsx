@@ -135,7 +135,7 @@ export const AddProgramModal: React.FC<AddProgramModalProps> = ({
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 text-xs sm:text-sm">
+        <div className="p-6 space-y-4 text-xs sm:text-sm">
           <div>
             <label className="block font-semibold text-slate-700 mb-1">
               Nama Program / Kegiatan Pembinaan *
@@ -207,14 +207,18 @@ export const AddProgramModal: React.FC<AddProgramModalProps> = ({
               Batal
             </button>
             <button
-              type="submit"
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                handleSubmit(e as any);
+              }}
               className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-md transition-all cursor-pointer"
             >
               <Check className="w-4 h-4" />
               <span>Simpan Program</span>
             </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
