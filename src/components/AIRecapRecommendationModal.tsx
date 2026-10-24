@@ -16,6 +16,7 @@ import {
 import { Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, WidthType, AlignmentType, BorderStyle } from 'docx';
 import { RPPEvaluation } from '../types';
 import { formatDateIndonesian } from '../utils/exportUtils';
+import { safeApiCall } from '../utils/apiUtils';
 
 interface AIRecapRecommendationModalProps {
   evaluations: RPPEvaluation[];
@@ -47,18 +48,13 @@ export const AIRecapRecommendationModal: React.FC<AIRecapRecommendationModalProp
     setLoading(true);
     setError(null);
     try {
-      const resp = await fetch('/api/analyze-recap-recommendations', {
+      const data = await safeApiCall('/api/analyze-recap-recommendations', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ evaluations }),
       });
-
-      const data = await resp.json();
-      if (!resp.ok || !data.success) {
-        throw new Error(data.error || 'Gagal menganalisis rekomendasi AI.');
-      }
 
       setResult(data.data);
     } catch (err: any) {

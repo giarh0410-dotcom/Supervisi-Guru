@@ -9,6 +9,7 @@ import {
   PascaObservasiData,
 } from '../types';
 import { getAllTeachers } from '../data/storage';
+import { safeApiCall } from '../utils/apiUtils';
 import {
   INDICATORS,
   SECTION_INFO,
@@ -355,16 +356,11 @@ export const AssessmentForm: React.FC<AssessmentFormProps> = ({
     setFileReadError(null);
 
     try {
-      const resp = await fetch('/api/fetch-url-content', {
+      const json = await safeApiCall('/api/fetch-url-content', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ url: linkUrl.trim() }),
       });
-
-      const json = await resp.json();
-      if (!resp.ok || !json.success) {
-        throw new Error(json.error || 'Gagal mengambil konten dari URL.');
-      }
 
       setExtractedDocText(json.text);
     } catch (err: any) {
@@ -443,7 +439,7 @@ export const AssessmentForm: React.FC<AssessmentFormProps> = ({
       setTimeout(() => setAiStep('2/3: Mengekstrak identitas & menilai 42 indikator instrumen PM...'), 1800);
       setTimeout(() => setAiStep('3/3: Menyusun telaah literasi, numerasi & umpan balik pengawas...'), 3800);
 
-      const response = await fetch('/api/analyze-rpp', {
+      const json = await safeApiCall('/api/analyze-rpp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -460,11 +456,6 @@ export const AssessmentForm: React.FC<AssessmentFormProps> = ({
           linkUrl: linkUrl,
         }),
       });
-
-      const json = await response.json();
-      if (!response.ok || !json.success) {
-        throw new Error(json.error || 'Gagal memproses telaah RPP.');
-      }
 
       const { data } = json;
 

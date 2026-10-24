@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
-import {
-  PascaObservasiData,
-  ProgramTindakLanjutItem,
-  TeacherIdentity,
-  ScoreValue,
-  PraObservasiData,
-} from '../../types';
+import { PascaObservasiData, ProgramTindakLanjutItem, TeacherIdentity, ScoreValue, PraObservasiData } from '../../types';
+import { safeApiCall } from '../../utils/apiUtils';
 import { AddProgramModal } from './AddProgramModal';
 import {
   Sparkles,
@@ -60,7 +55,7 @@ export const Stage4PascaObservasi: React.FC<Stage4PascaObservasiProps> = ({
     setAiSuccess(null);
 
     try {
-      const response = await fetch('/api/analyze-observasi-ai', {
+      const json = await safeApiCall('/api/analyze-observasi-ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -72,11 +67,6 @@ export const Stage4PascaObservasi: React.FC<Stage4PascaObservasiProps> = ({
           observasiFinalScore,
         }),
       });
-
-      const json = await response.json();
-      if (!response.ok || !json.success) {
-        throw new Error(json.error || 'Gagal menganalisis data observasi.');
-      }
 
       const { data } = json;
 
@@ -110,7 +100,7 @@ export const Stage4PascaObservasi: React.FC<Stage4PascaObservasiProps> = ({
     setAiSuccess(null);
 
     try {
-      const response = await fetch('/api/generate-rtl-ai', {
+      const json = await safeApiCall('/api/generate-rtl-ai', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -124,11 +114,6 @@ export const Stage4PascaObservasi: React.FC<Stage4PascaObservasiProps> = ({
           kelebihanUtama: pascaObservasi.kelebihanUtama,
         }),
       });
-
-      const json = await response.json();
-      if (!response.ok || !json.success) {
-        throw new Error(json.error || 'Gagal membuat matriks program RTL.');
-      }
 
       const programs: ProgramTindakLanjutItem[] = json.data || [];
       if (programs.length > 0) {
