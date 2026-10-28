@@ -170,551 +170,463 @@ export const Dashboard: React.FC<DashboardProps> = ({
   const getPredicateBadgeClass = (pred: 'A' | 'B' | 'C' | 'D') => {
     switch (pred) {
       case 'A':
-        return 'bg-emerald-100 text-emerald-800 border-emerald-300 font-bold';
+        return 'bg-emerald-500/20 text-emerald-300 border-emerald-400/40 font-bold';
       case 'B':
-        return 'bg-blue-100 text-blue-800 border-blue-300 font-bold';
+        return 'bg-blue-500/20 text-blue-300 border-blue-400/40 font-bold';
       case 'C':
-        return 'bg-amber-100 text-amber-800 border-amber-300 font-bold';
+        return 'bg-amber-500/20 text-amber-300 border-amber-400/40 font-bold';
       case 'D':
-        return 'bg-rose-100 text-rose-800 border-rose-300 font-bold';
+        return 'bg-rose-500/20 text-rose-300 border-rose-400/40 font-bold';
     }
   };
 
   return (
-    <div className="space-y-6 pb-12">
-      {/* Action Header & Quick Stats */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-        <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-bold rounded-full mb-2">
-            <Layers className="w-3.5 h-3.5" />
+    <div className="space-y-8 pb-16 animate-fade-in">
+      {/* AI Recap Recommendation Modal */}
+      <AIRecapRecommendationModal
+        evaluations={evaluations}
+        isOpen={isAiModalOpen}
+        onClose={() => setIsAiModalOpen(false)}
+      />
+
+      {/* GLASSY ACTION HEADER */}
+      <div className="backdrop-blur-2xl bg-white/70 border border-white/60 shadow-2xl shadow-indigo-950/10 rounded-3xl p-6 sm:p-8 flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative overflow-hidden">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="space-y-2 relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-indigo-600/10 border border-indigo-500/30 text-indigo-700 text-xs font-bold rounded-full">
+            <Layers className="w-3.5 h-3.5 text-indigo-600" />
             <span>Siklus Penuh: Telaah RPP • Pra-Observasi • Observasi Kelas • Pasca-Observasi & RTL</span>
           </div>
-          <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">
-            <Users className="w-6 h-6 text-indigo-600" />
+          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+            <Users className="w-7 h-7 text-indigo-600" />
             Dashboard Hasil Supervisi Klinis Terpadu (PM)
           </h2>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1">
-            Supervisor SMP Islam Modern Al Fakhir: <span className="font-bold text-slate-800">Deny Rahmat, S.Sos.I.</span> <span className="font-mono text-slate-600">(NUPTK. 1856762663120002)</span>
+          <p className="text-xs sm:text-sm text-slate-600 font-medium">
+            Supervisor SMP Islam Modern Al Fakhir: <span className="font-bold text-slate-900">Deny Rahmat, S.Sos.I.</span> <span className="font-mono text-slate-500">(NUPTK. 1856762663120002)</span>
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3 relative z-10">
+          <button
+            onClick={() => setIsAiModalOpen(true)}
+            className="flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 rounded-2xl font-black text-xs shadow-lg shadow-amber-500/25 transition-all transform hover:scale-105 cursor-pointer"
+          >
+            <Sparkles className="w-4 h-4" />
+            <span>AI Analisis & Rekomendasi</span>
+          </button>
+
           <button
             onClick={() => exportRecapToWord(evaluations)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-semibold text-xs transition-all shadow-md shadow-blue-600/20 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-3 bg-white/80 hover:bg-white text-blue-700 border border-blue-200 rounded-2xl font-bold text-xs shadow-md transition-all cursor-pointer"
             title="Unduh seluruh data rekapan semua guru dalam format Dokumen Word (.docx)"
           >
             <FileText className="w-4 h-4" />
-            <span>Rekapan Supervisi (Word .docx)</span>
+            <span>Word (.docx)</span>
           </button>
 
           <button
             onClick={() => exportRecapToExcel(evaluations)}
-            className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs transition-all shadow-md shadow-emerald-600/20 cursor-pointer"
+            className="flex items-center gap-2 px-4 py-3 bg-white/80 hover:bg-white text-emerald-700 border border-emerald-200 rounded-2xl font-bold text-xs shadow-md transition-all cursor-pointer"
             title="Unduh seluruh data rekapan dalam format MS Excel (.xlsx)"
           >
             <FileSpreadsheet className="w-4 h-4" />
-            <span>Rekapan Supervisi (Excel .xlsx)</span>
+            <span>Excel (.xlsx)</span>
           </button>
 
           <button
             onClick={onNewAssessment}
-            className="flex items-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-xs transition-all shadow-md shadow-indigo-600/20 cursor-pointer"
+            className="flex items-center gap-2 px-5 py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold text-xs shadow-lg shadow-indigo-600/30 transition-all cursor-pointer"
           >
-            <PlusCircle className="w-4 h-4" />
-            <span>+ Supervisi Baru (4 Tahap)</span>
+            <PlusCircle className="w-4 h-4 text-amber-300" />
+            <span>+ Supervisi Baru</span>
           </button>
-
-          {evaluations.length > 0 && (
-            <button
-              onClick={onResetSampleData}
-              className="flex items-center gap-2 px-3 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-xl font-medium text-xs transition-all border border-rose-200 cursor-pointer"
-              title="Hapus seluruh data supervisi yang tersimpan"
-            >
-              <Trash2 className="w-3.5 h-3.5" />
-              <span>Hapus Semua</span>
-            </button>
-          )}
         </div>
       </div>
 
-      {/* Metric Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* GLASSY METRIC STAT CARDS */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Total Assessed */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between">
+        <div className="backdrop-blur-xl bg-white/70 border border-white/60 shadow-xl shadow-slate-900/5 p-6 rounded-3xl relative overflow-hidden group hover:shadow-2xl transition-all">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all"></div>
+          <div className="flex items-center justify-between relative z-10">
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Total Guru Disupervisi
               </p>
-              <p className="text-3xl font-extrabold text-slate-900 mt-1">
+              <p className="text-3xl font-black text-slate-900 mt-1">
                 {evaluations.length} <span className="text-sm font-normal text-slate-500">Guru</span>
               </p>
             </div>
-            <div className="p-3 bg-indigo-50 rounded-xl text-indigo-600">
+            <div className="p-3.5 bg-blue-600/10 rounded-2xl text-blue-600 border border-blue-200/50 shadow-inner">
               <Users className="w-6 h-6" />
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-3 flex items-center gap-1">
-            <School className="w-3.5 h-3.5 text-slate-400" /> SMP Binaan Kota Depok
+          <p className="text-xs text-slate-600 mt-3 flex items-center gap-1 relative z-10 font-medium">
+            <School className="w-3.5 h-3.5 text-indigo-600" /> SMP Binaan Kota Depok
           </p>
         </div>
 
         {/* Avg RPP Score */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between">
+        <div className="backdrop-blur-xl bg-white/70 border border-white/60 shadow-xl shadow-slate-900/5 p-6 rounded-3xl relative overflow-hidden group hover:shadow-2xl transition-all">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-all"></div>
+          <div className="flex items-center justify-between relative z-10">
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Rata-Rata Telaah RPP
               </p>
-              <p className="text-3xl font-extrabold text-indigo-600 mt-1">
+              <p className="text-3xl font-black text-indigo-600 mt-1">
                 {stats.avgRppScore}%
               </p>
             </div>
-            <div className="p-3 bg-indigo-50 rounded-xl text-indigo-600">
+            <div className="p-3.5 bg-indigo-600/10 rounded-2xl text-indigo-600 border border-indigo-200/50 shadow-inner">
               <BookOpen className="w-6 h-6" />
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-3 flex items-center gap-1">
-            <CheckCircle2 className="w-3.5 h-3.5 text-indigo-500" /> 42 Indikator Perencanaan
+          <p className="text-xs text-slate-600 mt-3 flex items-center gap-1 relative z-10 font-medium">
+            <CheckCircle2 className="w-3.5 h-3.5 text-indigo-600" /> 42 Indikator Perencanaan
           </p>
         </div>
 
         {/* Avg Observasi Score */}
-        <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between">
+        <div className="backdrop-blur-xl bg-white/70 border border-white/60 shadow-xl shadow-slate-900/5 p-6 rounded-3xl relative overflow-hidden group hover:shadow-2xl transition-all">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-sky-500/10 rounded-full blur-2xl group-hover:bg-sky-500/20 transition-all"></div>
+          <div className="flex items-center justify-between relative z-10">
             <div>
-              <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+              <p className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                 Rata-Rata Observasi Kelas
               </p>
-              <p className="text-3xl font-extrabold text-sky-600 mt-1">
+              <p className="text-3xl font-black text-sky-600 mt-1">
                 {stats.avgObsScore}%
               </p>
             </div>
-            <div className="p-3 bg-sky-50 rounded-xl text-sky-600">
+            <div className="p-3.5 bg-sky-600/10 rounded-2xl text-sky-600 border border-sky-200/50 shadow-inner">
               <Eye className="w-6 h-6" />
             </div>
           </div>
-          <p className="text-xs text-slate-500 mt-3 flex items-center gap-1">
-            <CheckCircle2 className="w-3.5 h-3.5 text-sky-500" /> 14 Indikator Kelas PM
+          <p className="text-xs text-slate-600 mt-3 flex items-center gap-1 relative z-10 font-medium">
+            <CheckCircle2 className="w-3.5 h-3.5 text-sky-600" /> 14 Indikator Kelas PM
           </p>
         </div>
 
         {/* Combined Supervised Score */}
-        <div className="bg-slate-900 text-white p-5 rounded-2xl border border-slate-800 shadow-sm relative overflow-hidden">
-          <div className="flex items-center justify-between">
+        <div className="backdrop-blur-xl bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white p-6 rounded-3xl border border-indigo-800/50 shadow-2xl relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/20 rounded-full blur-2xl"></div>
+          <div className="flex items-center justify-between relative z-10">
             <div>
               <p className="text-xs font-bold text-amber-400 uppercase tracking-wider">
-                Rata-Rata Skor Terpadu
+                ★ SKOR AKHIR TERPADU
               </p>
-              <p className="text-3xl font-extrabold text-white mt-1">
+              <p className="text-3xl font-black text-amber-400 mt-1 font-mono">
                 {stats.avgCombinedScore}%
               </p>
             </div>
-            <div className="p-3 bg-amber-400/20 rounded-xl text-amber-400">
+            <div className="p-3.5 bg-amber-400/20 rounded-2xl text-amber-400 border border-amber-400/30 shadow-inner">
               <Award className="w-6 h-6" />
             </div>
           </div>
-          <div className="flex items-center gap-2 mt-3 text-xs text-slate-300">
-            <span>A: {stats.predA}</span>
+          <div className="flex items-center gap-2 mt-3 text-xs text-indigo-200 relative z-10 font-medium">
+            <span>A: <strong className="text-white">{stats.predA}</strong></span>
             <span>•</span>
-            <span>B: {stats.predB}</span>
+            <span>B: <strong className="text-white">{stats.predB}</strong></span>
             <span>•</span>
-            <span>C: {stats.predC}</span>
-            <span>•</span>
-            <span>D: {stats.predD}</span>
+            <span>C: <strong className="text-white">{stats.predC}</strong></span>
           </div>
         </div>
       </div>
 
-      {/* Table Filters & Toolbar */}
-      <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2 border-b border-slate-100">
-          <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-indigo-600" />
-            Tabel Rekapan Siklus Supervisi Guru ({filteredEvaluations.length} Guru)
-          </h3>
-          <p className="text-xs text-slate-500">
-            Gunakan filter di bawah untuk memfilter berdasarkan nama guru, mapel, atau predikat.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {/* Search Text */}
-          <div className="relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-            <input
-              type="text"
-              placeholder="Cari guru, NIP, mapel, materi..."
-              value={filters.searchQuery}
-              onChange={(e) => setFilters({ ...filters, searchQuery: e.target.value })}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            />
+      {/* GLASSY ANALYTICS CHARTS SECTION */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Chart 1: Predicate Distribution */}
+        <div className="backdrop-blur-xl bg-white/70 border border-white/60 shadow-xl shadow-slate-900/5 p-6 rounded-3xl space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-200/60 pb-3">
+            <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-indigo-600" /> Distribusi Predikat Mutu Guru
+            </h3>
+            <span className="text-xs text-slate-500 font-semibold">Total: {evaluations.length} Guru</span>
           </div>
 
-          {/* School Filter */}
-          <div className="relative">
-            <Filter className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
-            <select
-              value={filters.schoolFilter}
-              onChange={(e) => setFilters({ ...filters, schoolFilter: e.target.value })}
-              className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 appearance-none"
-            >
-              <option value="ALL">Semua Sekolah (Satuan Pendidikan)</option>
-              {schoolOptions.map((sch) => (
-                <option key={sch} value={sch}>
-                  {sch}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Subject Filter */}
-          <div>
-            <select
-              value={filters.subjectFilter}
-              onChange={(e) => setFilters({ ...filters, subjectFilter: e.target.value })}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="ALL">Semua Mata Pelajaran</option>
-              {subjectOptions.map((sub) => (
-                <option key={sub} value={sub}>
-                  {sub}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Predicate Filter */}
-          <div>
-            <select
-              value={filters.predicateFilter}
-              onChange={(e) => setFilters({ ...filters, predicateFilter: e.target.value })}
-              className="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs sm:text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="ALL">Semua Predikat (A, B, C, D)</option>
-              <option value="A">Predikat A - Amat Baik (91-100)</option>
-              <option value="B">Predikat B - Baik (81-90)</option>
-              <option value="C">Predikat C - Cukup (71-80)</option>
-              <option value="D">Predikat D - Kurang (≤70)</option>
-            </select>
+          <div className="h-64 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={predicateChartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+                <Tooltip
+                  contentStyle={{ backgroundColor: '#1e293b', color: '#fff', borderRadius: '12px', fontSize: '12px' }}
+                />
+                <Bar dataKey="count" name="Jumlah Guru" radius={[8, 8, 0, 0]}>
+                  {predicateChartData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Table View Mode Switcher */}
-        <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
-          <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl text-xs font-semibold">
-            <button
-              onClick={() => setActiveTableTab('COMBINED')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                activeTableTab === 'COMBINED'
-                  ? 'bg-slate-900 text-white shadow-sm font-bold'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              ★ Rapor Supervisi Terpadu
-            </button>
-            <button
-              onClick={() => setActiveTableTab('RPP')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                activeTableTab === 'RPP'
-                  ? 'bg-indigo-600 text-white shadow-sm font-bold'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              📄 1. Telaah RPP (42 Indikator)
-            </button>
-            <button
-              onClick={() => setActiveTableTab('OBSERVASI')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                activeTableTab === 'OBSERVASI'
-                  ? 'bg-indigo-600 text-white shadow-sm font-bold'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              👁️ 2. Observasi Kelas (14 Indikator)
-            </button>
-            <button
-              onClick={() => setActiveTableTab('PASCA')}
-              className={`px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
-                activeTableTab === 'PASCA'
-                  ? 'bg-indigo-600 text-white shadow-sm font-bold'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              📋 3. Pasca & RTL
-            </button>
+        {/* Chart 2: Quick Summary Guide */}
+        <div className="backdrop-blur-xl bg-white/70 border border-white/60 shadow-xl shadow-slate-900/5 p-6 rounded-3xl space-y-4 flex flex-col justify-between">
+          <div className="border-b border-slate-200/60 pb-3">
+            <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider flex items-center gap-2">
+              <Award className="w-4 h-4 text-amber-600" /> Panduan Kualifikasi Mutu & Predikat
+            </h3>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <button
-              onClick={() => setIsAiModalOpen(true)}
-              className="flex items-center gap-2 px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white rounded-xl text-xs font-extrabold transition-all shadow-md cursor-pointer"
-              title="Analisis Rekomendasi & Umpan Balik Supervisi AI Gemini"
-            >
-              <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
-              <span>Analisis Rekomendasi AI</span>
-            </button>
-
-            <button
-              onClick={() => exportRecapToWord(filteredEvaluations)}
-              className="flex items-center gap-2 px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
-              title="Unduh Rekapan Semua Guru dalam Format Word (.docx)"
-            >
-              <FileText className="w-4 h-4" />
-              <span>Rekapan Word (.docx)</span>
-            </button>
-
-            <button
-              onClick={() => exportRecapToExcel(filteredEvaluations)}
-              className="flex items-center gap-2 px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer"
-              title="Ekspor Seluruh Rekapan Nilai, Umpan Balik & Rekomendasi ke Excel (.xlsx)"
-            >
-              <FileSpreadsheet className="w-4 h-4" />
-              <span>Rekapan Excel (.xlsx)</span>
-            </button>
+          <div className="space-y-3 text-xs sm:text-sm">
+            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-2xl flex items-center justify-between">
+              <div className="font-bold text-emerald-900">Predikat A (Amat Baik / Unggul)</div>
+              <span className="font-mono font-black text-emerald-700">91% - 100%</span>
+            </div>
+            <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-2xl flex items-center justify-between">
+              <div className="font-bold text-blue-900">Predikat B (Baik / Cakap)</div>
+              <span className="font-mono font-black text-blue-700">76% - 90%</span>
+            </div>
+            <div className="p-3 bg-amber-500/10 border border-amber-500/20 rounded-2xl flex items-center justify-between">
+              <div className="font-bold text-amber-900">Predikat C (Cukup / Perlu Pendampingan)</div>
+              <span className="font-mono font-black text-amber-700">60% - 75%</span>
+            </div>
+            <div className="p-3 bg-rose-500/10 border border-rose-500/20 rounded-2xl flex items-center justify-between">
+              <div className="font-bold text-rose-900">Predikat D (Kurang / Intervensi Intensif)</div>
+              <span className="font-mono font-black text-rose-700">&lt; 60%</span>
+            </div>
           </div>
         </div>
+      </div>
 
-        {/* Master Table */}
-        <div className="overflow-x-auto rounded-2xl border border-slate-200">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="bg-slate-100/80 text-slate-700 font-bold border-b border-slate-200">
-                <th className="py-3 px-3 w-10 text-center">No</th>
-                <th className="py-3 px-3">Nama Guru & NIP</th>
-                <th className="py-3 px-3">Sekolah & Mapel</th>
+      {/* FILTER & SEARCH BAR */}
+      <div className="backdrop-blur-xl bg-white/70 border border-white/60 shadow-xl shadow-slate-900/5 p-5 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="relative w-full md:w-96">
+          <Search className="absolute left-3.5 top-3 w-4 h-4 text-slate-400" />
+          <input
+            type="text"
+            value={filters.searchQuery}
+            onChange={(e) => setFilters({ ...filters, searchQuery: e.target.value })}
+            placeholder="Cari guru, NIP, mapel, atau sekolah..."
+            className="w-full pl-10 pr-4 py-2.5 bg-white/80 border border-slate-200 rounded-xl text-sm focus:bg-white focus:ring-2 focus:ring-indigo-500"
+          />
+        </div>
 
-                {activeTableTab === 'COMBINED' && (
-                  <>
-                    <th className="py-3 px-3 text-center">Nilai RPP</th>
-                    <th className="py-3 px-3 text-center">Nilai Observasi</th>
-                    <th className="py-3 px-3 text-center font-black text-indigo-900">SKOR TERPADU</th>
-                    <th className="py-3 px-3 text-center">Predikat</th>
-                    <th className="py-3 px-3 min-w-[200px]">Kelebihan & Refleksi</th>
-                  </>
-                )}
+        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+          <select
+            value={filters.schoolFilter}
+            onChange={(e) => setFilters({ ...filters, schoolFilter: e.target.value })}
+            className="px-4 py-2.5 bg-white/80 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+          >
+            <option value="ALL">Semua Sekolah ({schoolOptions.length})</option>
+            {schoolOptions.map((sch) => (
+              <option key={sch} value={sch}>
+                {sch}
+              </option>
+            ))}
+          </select>
 
-                {activeTableTab === 'RPP' && (
-                  <>
-                    <th className="py-3 px-2 text-center" title="Keselarasan (20)">A</th>
-                    <th className="py-3 px-2 text-center" title="Kerangka (16)">B</th>
-                    <th className="py-3 px-2 text-center" title="Pengalaman Belajar (76)">C</th>
-                    <th className="py-3 px-2 text-center" title="LitNum (32)">D</th>
-                    <th className="py-3 px-2 text-center" title="Asesmen (24)">E</th>
-                    <th className="py-3 px-3 text-center font-bold">Total (168)</th>
-                    <th className="py-3 px-3 text-center font-bold">Nilai RPP</th>
-                    <th className="py-3 px-3 text-center">Predikat</th>
-                  </>
-                )}
+          <select
+            value={filters.subjectFilter}
+            onChange={(e) => setFilters({ ...filters, subjectFilter: e.target.value })}
+            className="px-4 py-2.5 bg-white/80 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+          >
+            <option value="ALL">Semua Mapel ({subjectOptions.length})</option>
+            {subjectOptions.map((subj) => (
+              <option key={subj} value={subj}>
+                {subj}
+              </option>
+            ))}
+          </select>
 
-                {activeTableTab === 'OBSERVASI' && (
-                  <>
-                    <th className="py-3 px-3 text-center">Pendahuluan (4 Indikator)</th>
-                    <th className="py-3 px-3 text-center">Inti (6 Indikator)</th>
-                    <th className="py-3 px-3 text-center">Penutup (4 Indikator)</th>
-                    <th className="py-3 px-3 text-center font-bold">Skor (56)</th>
-                    <th className="py-3 px-3 text-center font-black text-sky-700">Nilai Obs (%)</th>
-                    <th className="py-3 px-3 text-center">Predikat Obs</th>
-                  </>
-                )}
+          <select
+            value={filters.predicateFilter}
+            onChange={(e) => setFilters({ ...filters, predicateFilter: e.target.value })}
+            className="px-4 py-2.5 bg-white/80 border border-slate-200 rounded-xl text-xs sm:text-sm font-medium text-slate-700 focus:bg-white focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+          >
+            <option value="ALL">Semua Predikat</option>
+            <option value="A">Predikat A</option>
+            <option value="B">Predikat B</option>
+            <option value="C">Predikat C</option>
+            <option value="D">Predikat D</option>
+          </select>
+        </div>
+      </div>
 
-                {activeTableTab === 'PASCA' && (
-                  <>
-                    <th className="py-3 px-3 min-w-[180px]">Refleksi Guru</th>
-                    <th className="py-3 px-3 min-w-[180px]">Kelebihan Utama</th>
-                    <th className="py-3 px-3 min-w-[180px]">Hal Ditingkatkan</th>
-                    <th className="py-3 px-3 text-center w-24">Jumlah RTL</th>
-                  </>
-                )}
+      {/* TABLE VIEW TABS */}
+      <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-2 text-xs font-bold">
+        <button
+          onClick={() => setActiveTableTab('COMBINED')}
+          className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+            activeTableTab === 'COMBINED'
+              ? 'bg-indigo-600 text-white shadow-md'
+              : 'bg-white/80 text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          ★ Rekap Skor Akhir Terpadu
+        </button>
+        <button
+          onClick={() => setActiveTableTab('RPP')}
+          className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+            activeTableTab === 'RPP'
+              ? 'bg-indigo-600 text-white shadow-md'
+              : 'bg-white/80 text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          1. Rekap Telaah RPP (42 Indikator)
+        </button>
+        <button
+          onClick={() => setActiveTableTab('OBSERVASI')}
+          className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+            activeTableTab === 'OBSERVASI'
+              ? 'bg-indigo-600 text-white shadow-md'
+              : 'bg-white/80 text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          3. Rekap Observasi Kelas (14 Indikator)
+        </button>
+        <button
+          onClick={() => setActiveTableTab('PASCA')}
+          className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
+            activeTableTab === 'PASCA'
+              ? 'bg-indigo-600 text-white shadow-md'
+              : 'bg-white/80 text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          4. Pasca-Observasi & Matriks RTL
+        </button>
+      </div>
 
-                <th className="py-3 px-3 text-center">Tanggal</th>
-                <th className="py-3 px-3 text-center w-28">Aksi</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-200 bg-white">
-              {filteredEvaluations.length === 0 ? (
-                <tr>
-                  <td colSpan={12} className="py-12 text-center text-slate-500 space-y-3">
-                    <p className="text-sm font-semibold text-slate-700">
-                      Belum Ada Data Hasil Supervisi
-                    </p>
-                    <button
-                      onClick={onNewAssessment}
-                      className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-xs shadow-md transition-all mt-2 cursor-pointer"
-                    >
-                      <PlusCircle className="w-4 h-4" />
-                      <span>Buat Form Supervisi Baru (4 Tahap)</span>
-                    </button>
-                  </td>
+      {/* GLASSY EVALUATIONS TABLE */}
+      <div className="backdrop-blur-xl bg-white/70 border border-white/60 shadow-xl shadow-slate-900/5 rounded-3xl overflow-hidden">
+        {filteredEvaluations.length === 0 ? (
+          <div className="p-12 text-center space-y-3">
+            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto text-slate-400">
+              <Users className="w-8 h-8" />
+            </div>
+            <h3 className="text-base font-bold text-slate-800">Tidak ada data supervisi ditemukan</h3>
+            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              Coba sesuaikan filter pencarian atau buat asesmen supervisi terpadu baru.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse text-xs sm:text-sm">
+              <thead>
+                <tr className="bg-slate-900/90 text-white font-bold border-b border-slate-800">
+                  <th className="p-3.5 text-center w-12">No</th>
+                  <th className="p-3.5">Nama Guru & NIP</th>
+                  <th className="p-3.5">Mata Pelajaran & Sekolah</th>
+                  {activeTableTab === 'COMBINED' && (
+                    <>
+                      <th className="p-3.5 text-center">Nilai RPP</th>
+                      <th className="p-3.5 text-center">Nilai Observasi</th>
+                      <th className="p-3.5 text-center">Skor Akhir Terpadu</th>
+                    </>
+                  )}
+                  {activeTableTab === 'RPP' && (
+                    <th className="p-3.5 text-center">Telaah RPP (42 Indikator)</th>
+                  )}
+                  {activeTableTab === 'OBSERVASI' && (
+                    <th className="p-3.5 text-center">Observasi Kelas (14 Indikator)</th>
+                  )}
+                  {activeTableTab === 'PASCA' && (
+                    <th className="p-3.5">Rencana Tindak Lanjut (RTL) Utama</th>
+                  )}
+                  <th className="p-3.5 text-center w-40">Aksi</th>
                 </tr>
-              ) : (
-                filteredEvaluations.map((item, idx) => (
-                  <tr key={item.id} className="hover:bg-indigo-50/40 transition-colors align-top">
-                    <td className="py-3 px-3 text-center font-medium text-slate-500">{idx + 1}</td>
-                    <td className="py-3 px-3">
-                      <div className="font-bold text-slate-900">{item.identity.teacherName}</div>
-                      <div className="text-[10px] text-slate-500 font-mono">
-                        NIP: {item.identity.nipNuptk || '-'}
-                      </div>
-                    </td>
-                    <td className="py-3 px-3">
-                      <div className="font-semibold text-slate-800">{item.identity.schoolName}</div>
-                      <div className="text-[10px] text-slate-500">
-                        {item.identity.subject} • {item.identity.gradeFase}
-                      </div>
-                    </td>
+              </thead>
+              <tbody className="divide-y divide-slate-200/60 bg-white/50">
+                {filteredEvaluations.map((item, idx) => {
+                  const combinedScore = item.combinedFinalScore ?? item.finalScore;
+                  const combinedPred = item.combinedPredicate ?? item.predicate;
+                  const combinedLabel = item.combinedPredicateLabel ?? item.predicateLabel;
 
-                    {/* COMBINED TAB */}
-                    {activeTableTab === 'COMBINED' && (
-                      <>
-                        <td className="py-3 px-3 text-center font-mono font-bold text-indigo-700">
-                          {item.finalScore}%
-                        </td>
-                        <td className="py-3 px-3 text-center font-mono font-bold text-sky-700">
-                          {item.observasiFinalScore || 85}%
-                        </td>
-                        <td className="py-3 px-3 text-center font-black text-amber-600 font-mono text-sm">
-                          {item.combinedFinalScore || 88}%
-                        </td>
-                        <td className="py-3 px-3 text-center">
-                          <span
-                            className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] border ${getPredicateBadgeClass(
-                              item.combinedPredicate || item.predicate
-                            )}`}
-                          >
-                            {item.combinedPredicate || item.predicate}
+                  return (
+                    <tr key={item.id} className="hover:bg-indigo-50/40 transition-colors">
+                      <td className="p-3.5 text-center font-bold text-slate-500 font-mono">{idx + 1}</td>
+                      <td className="p-3.5">
+                        <div className="font-extrabold text-slate-900">{item.identity.teacherName}</div>
+                        <div className="text-[11px] font-mono text-slate-500">{item.identity.nipNuptk || '-'}</div>
+                      </td>
+                      <td className="p-3.5">
+                        <div className="font-semibold text-indigo-950">{item.identity.subject} ({item.identity.gradeFase})</div>
+                        <div className="text-[11px] text-slate-600">{item.identity.schoolName}</div>
+                      </td>
+
+                      {activeTableTab === 'COMBINED' && (
+                        <>
+                          <td className="p-3.5 text-center font-mono font-bold text-indigo-700">
+                            {item.finalScore}%
+                          </td>
+                          <td className="p-3.5 text-center font-mono font-bold text-sky-700">
+                            {item.observasiFinalScore ?? 85}%
+                          </td>
+                          <td className="p-3.5 text-center">
+                            <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-black border ${getPredicateBadgeClass(combinedPred as any)}`}>
+                              {combinedScore}% ({combinedPred})
+                            </span>
+                          </td>
+                        </>
+                      )}
+
+                      {activeTableTab === 'RPP' && (
+                        <td className="p-3.5 text-center">
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-black border ${getPredicateBadgeClass(item.predicate)}`}>
+                            {item.finalScore}% - Predikat {item.predicate} ({item.predicateLabel})
                           </span>
                         </td>
-                        <td className="py-3 px-3 text-[11px] text-slate-600 line-clamp-2 max-w-xs">
-                          {item.pascaObservasi?.kelebihanUtama || item.feedback?.kelebihan || '-'}
-                        </td>
-                      </>
-                    )}
+                      )}
 
-                    {/* RPP TAB */}
-                    {activeTableTab === 'RPP' && (
-                      <>
-                        <td className="py-3 px-2 text-center font-mono text-slate-600">{item.scoreA}</td>
-                        <td className="py-3 px-2 text-center font-mono text-slate-600">{item.scoreB}</td>
-                        <td className="py-3 px-2 text-center font-mono text-slate-600">{item.scoreC}</td>
-                        <td className="py-3 px-2 text-center font-mono text-slate-600">{item.scoreD}</td>
-                        <td className="py-3 px-2 text-center font-mono text-slate-600">{item.scoreE}</td>
-                        <td className="py-3 px-3 text-center font-bold text-slate-900 font-mono">
-                          {item.totalScore}
-                        </td>
-                        <td className="py-3 px-3 text-center font-extrabold text-indigo-700 font-mono">
-                          {item.finalScore}%
-                        </td>
-                        <td className="py-3 px-3 text-center">
-                          <span
-                            className={`inline-block px-2 py-0.5 rounded-full text-[10px] border ${getPredicateBadgeClass(
-                              item.predicate
-                            )}`}
-                          >
-                            {item.predicate}
+                      {activeTableTab === 'OBSERVASI' && (
+                        <td className="p-3.5 text-center">
+                          <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-black border ${getPredicateBadgeClass(item.observasiPredicate || 'A')}`}>
+                            {item.observasiFinalScore ?? 85}% - Predikat {item.observasiPredicate || 'A'}
                           </span>
                         </td>
-                      </>
-                    )}
+                      )}
 
-                    {/* OBSERVASI TAB */}
-                    {activeTableTab === 'OBSERVASI' && (
-                      <>
-                        <td className="py-3 px-3 text-center font-mono text-slate-700">
-                          {((item.observasiSectionA || 14) / 16 * 100).toFixed(0)}%
+                      {activeTableTab === 'PASCA' && (
+                        <td className="p-3.5 text-slate-700 text-xs leading-relaxed">
+                          {item.pascaObservasi?.programTindakLanjut?.[0]?.namaProgram || 'Pendampingan klinis lanjutan terprogram.'}
                         </td>
-                        <td className="py-3 px-3 text-center font-mono text-slate-700">
-                          {((item.observasiSectionB || 20) / 24 * 100).toFixed(0)}%
-                        </td>
-                        <td className="py-3 px-3 text-center font-mono text-slate-700">
-                          {((item.observasiSectionC || 14) / 16 * 100).toFixed(0)}%
-                        </td>
-                        <td className="py-3 px-3 text-center font-bold font-mono text-slate-900">
-                          {item.observasiTotalScore || 48}/56
-                        </td>
-                        <td className="py-3 px-3 text-center font-extrabold text-sky-700 font-mono">
-                          {item.observasiFinalScore || 85}%
-                        </td>
-                        <td className="py-3 px-3 text-center">
-                          <span
-                            className={`inline-block px-2 py-0.5 rounded-full text-[10px] border ${getPredicateBadgeClass(
-                              item.observasiPredicate || 'B'
-                            )}`}
+                      )}
+
+                      <td className="p-3.5 text-center">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <button
+                            onClick={() => onSelectEvaluation(item.id)}
+                            title="Buka Rapor Lengkap"
+                            className="p-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow transition-all cursor-pointer"
                           >
-                            {item.observasiPredicate || 'B'}
-                          </span>
-                        </td>
-                      </>
-                    )}
-
-                    {/* PASCA TAB */}
-                    {activeTableTab === 'PASCA' && (
-                      <>
-                        <td className="py-3 px-3 text-[11px] text-slate-700 line-clamp-2 max-w-xs">
-                          {item.pascaObservasi?.refleksiGuru || '-'}
-                        </td>
-                        <td className="py-3 px-3 text-[11px] text-emerald-800 line-clamp-2 max-w-xs">
-                          {item.pascaObservasi?.kelebihanUtama || item.feedback?.kelebihan || '-'}
-                        </td>
-                        <td className="py-3 px-3 text-[11px] text-amber-800 line-clamp-2 max-w-xs">
-                          {item.pascaObservasi?.halDitingkatkan || item.feedback?.halDitingkatkan || '-'}
-                        </td>
-                        <td className="py-3 px-3 text-center font-bold font-mono text-indigo-700">
-                          {item.pascaObservasi?.programTindakLanjut?.length || 0} Kegiatan
-                        </td>
-                      </>
-                    )}
-
-                    <td className="py-3 px-3 text-center text-[10px] text-slate-500 whitespace-nowrap">
-                      {item.identity.assessmentDate}
-                    </td>
-                    <td className="py-3 px-3 text-center">
-                      <div className="flex items-center justify-center gap-1.5">
-                        <button
-                          onClick={() => onSelectEvaluation(item.id)}
-                          className="p-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white rounded-lg transition-colors cursor-pointer"
-                          title="Lihat & Cetak Laporan Supervisi Terpadu"
-                        >
-                          <Eye className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => exportSingleEvaluationToWord(item)}
-                          className="p-1.5 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white rounded-lg transition-colors cursor-pointer"
-                          title="Unduh Laporan Word (.docx)"
-                        >
-                          <FileText className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => onEditEvaluation(item.id)}
-                          className="p-1.5 bg-amber-50 text-amber-600 hover:bg-amber-600 hover:text-white rounded-lg transition-colors cursor-pointer"
-                          title="Edit Supervisi"
-                        >
-                          <Edit className="w-3.5 h-3.5" />
-                        </button>
-                        <button
-                          onClick={() => onDeleteEvaluation(item.id)}
-                          className="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white rounded-lg transition-colors cursor-pointer"
-                          title="Hapus Data"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => onEditEvaluation(item.id)}
+                            title="Edit Data"
+                            className="p-2 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-xl shadow transition-all cursor-pointer"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => exportSingleEvaluationToWord(item)}
+                            title="Unduh Rapor Word"
+                            className="p-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow transition-all cursor-pointer"
+                          >
+                            <FileText className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => onDeleteEvaluation(item.id)}
+                            title="Hapus Rekaman"
+                            className="p-2 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 rounded-xl transition-all cursor-pointer"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
-
-      {/* AI Supervisory Recommendation Modal */}
-      <AIRecapRecommendationModal
-        evaluations={filteredEvaluations}
-        isOpen={isAiModalOpen}
-        onClose={() => setIsAiModalOpen(false)}
-      />
     </div>
   );
 };
